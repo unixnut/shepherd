@@ -6,8 +6,8 @@ more convenient.
 
 boto_helper
 -----------
-Allows your programs that use `[boto][]` to enjoy the magic and flexibility
-of the `.aws/config` file used by `[aws-cli][]` instead of the putrid mess
+Allows your programs that use [boto] to enjoy the magic and flexibility
+of the `.aws/config` file used by [aws-cli] instead of the putrid mess
 that is the `.boto` file used by the boto library by default.
 
 The documentation can be described as a code snippet.  Just do this:
