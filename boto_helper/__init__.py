@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/env python3
 
 import botocore.session
 import boto
@@ -10,13 +10,13 @@ class Credentials(object):
     """Loads credentials and the name of the default region from .aws/config.
     Stuffs the credentials into the boto module's in-memory credentials store.  
     Doesn't need to provide the ability to return credentials.
-    
+
     Use default_region() to get the default region that was specified in .aws/config."""
     def __init__(self):
         # Just make a session 
         boto_session = botocore.session.Session(awscli.EnvironmentVariables)
         creds = boto_session.get_credentials()
-        self._default_region = boto_session.get_config()['region']
+        self._default_region = boto_session.get_config_variable('region')
 
         # Now create an in-memory copy of the [Credentials] section,
         # as if it came from .boto
@@ -28,13 +28,14 @@ class Credentials(object):
         ## boto.config.set('Credentials', 'security_token', creds.token)
 
 
+
     def default_region(self):
         return self._default_region
 
 
-
 if __name__ == "__main__":
-    print "hi from " + __file__
+    print ("hi from " + __file__)
     c = Credentials()
-    print c.default_region()
+    print ( c.default_region() )
+
 
