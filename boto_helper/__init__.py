@@ -16,7 +16,7 @@ class Credentials(object):
         # Just make a session 
         boto_session = botocore.session.Session(awscli.EnvironmentVariables)
         creds = boto_session.get_credentials()
-        self._default_region = boto_session.get_config()['region']
+        self._default_region = boto_session.get_config_variable('region')
 
         # Now create an in-memory copy of the [Credentials] section,
         # as if it came from .boto
