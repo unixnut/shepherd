@@ -85,7 +85,7 @@ Also, the following AWS action names can be used instead:
 
   - start
   - reboot
-  - shutdown
+  - stop
   - terminate
 
 Options

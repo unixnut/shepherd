@@ -1,12 +1,17 @@
 from __future__ import absolute_import
 
 import exceptions
+import os.path
 
 import ansible.inventory
 
 
 # *** CLASSES ***
 class InventoryError(exceptions.RuntimeError):
+    pass
+
+
+class InventoryFileMissing(InventoryError):
     pass
 
 
@@ -17,6 +22,9 @@ class NoHostsError(exceptions.RuntimeError):
 # *** FUNCTIONS ***
 def collate(host_pattern, inventory_filename, logger):
     """Create a multi-dimensional array grouping hosts by provider and region."""
+
+    if not os.path.exists(inventory_filename):
+        raise InventoryFileMissing("Inventory file missing: " + inventory_filename)
     try:
         i = ansible.inventory.Inventory(inventory_filename)
     except ansible.errors.AnsibleError, e:

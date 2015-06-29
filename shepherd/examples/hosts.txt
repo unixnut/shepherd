@@ -1,5 +1,4 @@
 mail.example.com cloud_provider=aws cloud_region=us-east-1 cloud_instance_id=i-234aa3a9
-tarantula.warpspace.net cloud_provider=aws cloud_region=ap-southeast-2 cloud_instance_id=i-07641738
 ## snot.example.com cloud_provider=aws cloud_region=ap-southeast-2 cloud_instance_id=i-berk
 ## glop.example.com cloud_provider=aws cloud_region=ap-southeast-2 cloud_instance_id=i-234aa3aa
 

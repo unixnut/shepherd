@@ -114,6 +114,6 @@ def process_args(args):
                 action = args[1]
                 host_pattern = args[0]
         else:
-            raise errors.CommandlineError("Invalid command-line parameters.")
+            raise errors.CommandlineError("Invalid command-line arguments.")
 
     return action, host_pattern

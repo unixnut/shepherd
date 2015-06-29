@@ -173,11 +173,14 @@ def main(argv):
 
     try:
         host_maps = inventory.collate(host_pattern, params['inventory_filename'], logging)
-    except errors.NoHostsError, e:
-        logging.logging.report_notice("No instances matched");
+    except inventory.NoHostsError, e:
+        logging.report_notice("No instances matched");
         return
-    except errors.InventoryError, e:
-        logging.logging.report_error(str(e))
+    except inventory.InventoryFileMissing, e:
+        logging.report_error(str(e))
+        return 7
+    except inventory.InventoryError, e:
+        logging.report_error(str(e))
         return 6
 
     try:
@@ -190,7 +193,7 @@ def main(argv):
         return 5
     except errors.AuthError, e:
         logging.report_error(str(e) + ": check .boto, or use appropriate credentials option")
-        return 7
+        return 10
     except errors.ActionError, e:
         logging.report_error(str(e))
         global_cmdline.show_help(sys.stderr)
