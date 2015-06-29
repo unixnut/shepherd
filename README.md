@@ -4,6 +4,16 @@ Cloud-support
 Various command line tools and libraries to make using AWS and other providers
 more convenient.
 
+[Shepherd](shepherd)
+----------
+This is a tool for controlling a stable of hosts listed in an
+[Ansible][] [inventory file][Ansible_inventory].  (By the use of
+non-standard Ansible variables that identify the cloud provider, region
+and ID of the host.)  It can also show their status.
+
+    [Ansible]: http://www.ansible.com/
+    [Ansible_inventory]: http://docs.ansible.com/intro_inventory.html
+
 boto_helper
 -----------
 Allows your programs that use [boto] to enjoy the magic and flexibility
