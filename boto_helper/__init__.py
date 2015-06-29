@@ -18,21 +18,36 @@ class Credentials(object):
         creds = boto_session.get_credentials()
         self._default_region = boto_session.get_config_variable('region')
 
-        # Now create an in-memory copy of the [Credentials] section,
-        # as if it came from .boto
-        boto.config.add_section('Credentials')
-        # ...and populate it with whichever creds were fetched from .aws/config
-        boto.config.set('Credentials', 'aws_access_key_id', creds.access_key)
-        boto.config.set('Credentials', 'aws_secret_access_key', creds.secret_key)
-        # TO-DO: 
-        ## boto.config.set('Credentials', 'security_token', creds.token)
+        try:
+            # Now create an in-memory copy of the [Credentials] section,
+            # as if it came from .boto
+            boto.config.add_section('Credentials')
+            # ...and populate it with whichever creds were fetched from .aws/config
+            boto.config.set('Credentials', 'aws_access_key_id', creds.access_key)
+            boto.config.set('Credentials', 'aws_secret_access_key', creds.secret_key)
+            # TO-DO: 
+            ## boto.config.set('Credentials', 'security_token', creds.token)
+        except AttributeError, e:
+            p = boto_session.get_config_variable("profile")
+            if p:
+                raise ProfileException("Missing/incomplete credentials in profile '%s'" % (p,))
+            else:
+                raise ProfileException("Missing/incomplete credentials in default profile (maybe set $AWS_DEFAULT_PROFILE)")
 
 
+    ## TO-DO: make @property
     def default_region(self):
         return self._default_region
 
 
 
+# == Utility classes ==
+class ProfileException(Exception):
+    pass
+
+
+
+# *** MAINLINE ***
 if __name__ == "__main__":
     print "hi from " + __file__
     c = Credentials()
