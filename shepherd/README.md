@@ -34,6 +34,8 @@ of host management.  It is deliberately not dynamic.
 Installation
 ------------
 
+TBA
+
 Setup
 -----
 
@@ -59,7 +61,7 @@ two ways.
     shepherd <action> <host-pattern>
     shepherd list
 
-...where <action> is one of:-
+...where `<action>` is one of:-
 
   - dominfo
   - start
@@ -67,11 +69,11 @@ two ways.
   - shutdown
   - destroy
 
-service(1) mode:
+Or service(1) mode:
 
     shepherd <host-pattern> <action>
 
-...where <action> is one of:-
+...where `<action>` is one of:-
 
   - status
   - start
