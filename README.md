@@ -11,8 +11,8 @@ This is a tool for controlling a stable of hosts listed in an
 non-standard Ansible variables that identify the cloud provider, region
 and ID of the host.)  It can also show their status.
 
-    [Ansible]: http://www.ansible.com/
-    [Ansible_inventory]: http://docs.ansible.com/intro_inventory.html
+  [Ansible]: http://www.ansible.com/
+  [Ansible_inventory]: http://docs.ansible.com/intro_inventory.html
 
 boto_helper
 -----------

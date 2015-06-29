@@ -13,10 +13,10 @@ one or more cloud providers.
 Shepherd is intended to be used like [virsh][] or service(1).  Currently (v0.8),
 only [AWS][] is supported.
 
-    [Ansible]: http://www.ansible.com/
-    [Ansible_inventory]: http://docs.ansible.com/intro_inventory.html
-    [virsh]: http://libvirt.org/virshcmdref.html
-    [AWS]:   http://aws.amazon.com
+  [Ansible]: http://www.ansible.com/
+  [Ansible_inventory]: http://docs.ansible.com/intro_inventory.html
+  [virsh]: http://libvirt.org/virshcmdref.html
+  [AWS]:   http://aws.amazon.com
 
 Why not use Ansible's Dynamic Inventory feature?
 ------------------------------------------------
@@ -28,7 +28,7 @@ different from those in the AWS EC2 instance name tag, for example.
 Therefore the intent of Shepherd is to make the inventory file the locus
 of host management.  It is deliberately not dynamic.
 
-    [dyn]: http://docs.ansible.com/intro_dynamic_inventory.html
+  [dyn]: http://docs.ansible.com/intro_dynamic_inventory.html
 
 
 Installation
@@ -56,8 +56,8 @@ two ways.
 
 [virsh][] mode:
 
-  shepherd <action> <host-pattern>
-  shepherd list
+    shepherd <action> <host-pattern>
+    shepherd list
 
 ...where <action> is one of:-
 
@@ -69,7 +69,7 @@ two ways.
 
 service(1) mode:
 
-  shepherd <host-pattern> <action>
+    shepherd <host-pattern> <action>
 
 ...where <action> is one of:-
 
