@@ -1,7 +1,7 @@
 #! /usr/bin/python
 # shepherd (Python script) -- Control cloud servers using the provider's API
 #
-# Version:   0.8
+# Version:   0.9
 # Copyright: (c)2015 Alastair Irvine <alastair@plug.org.au>
 # Keywords:  aws boto virsh
 # Licence:   This file is released under the GNU General Public License
@@ -21,6 +21,7 @@ Options:
   -R, --running                                  Only show running instances
   -S, --stopped                                  Only show stopped instances
   -q, --quiet                                    Don't show useful messages
+  -v                                             Show progress when polling
 '''
 # Licence details:
 #     This program is free software; you can redistribute it and/or modify
