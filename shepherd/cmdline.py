@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 import sys
 import os
+import re
 
 from .utils.cmdline_controller import Handler as Handler
 from .utils import logging
@@ -16,16 +17,22 @@ basic_long_options=['help', 'inventory-file=', 'confirm', 'dry-run', 'quiet',
 
 # -- action stuff --
 # roughly mimic the commands supported by service(8)
-allowed_actions = ('status', 'start', 'restart', 'stop', 'kill')
+allowed_actions = ('status', 'fullstatus', 'start', 'restart', 'stop', 'kill')
 
 # translate other action sets into the above
-virsh_actions = {'list': 'status', 'dominfo': 'status', 'start': 'start', 'reboot': 'restart', 'shutdown': 'stop', 'destroy': 'kill'}
+virsh_actions = {'list': 'status', 'dominfo': 'fullstatus', 'start': 'start', 'reboot': 'restart', 'shutdown': 'stop', 'destroy': 'kill'}
 aws_actions = {'start': 'start', 'reboot': 'restart', 'stop': 'stop', 'terminate': 'kill'}
+other_actions = {'delete': 'kill'}
 
 cmdline_handler = None
 
 
 # *** CLASSES ***
+class NotFoundException(Exception):
+    pass
+
+
+
 class MyHandler(Handler):
     def __init__(self):
         super(MyHandler,self).__init__()
@@ -94,26 +101,47 @@ def init(controller):
     controller.add_long_options(basic_long_options)
 
 
+def lookup_action(name, *lists):
+    for l in lists:
+        if name in l:
+            return l[name]
+    raise NotFoundException("Not found in any list")
+
+
 def process_args(args):
     # -- argument checking and handling--
+    # special case for virsh emulation
     if args == ['list']:
         action = 'status'
         host_pattern = "all"
     else:
         ## print len(args), '[' + "; ".join(args) + ']'
         if len(args) == 2:
-            # check for reversed order with virsh action names
-            if args[0] in virsh_actions:
-                action = virsh_actions[args[0]]
-                host_pattern = args[1]
-            elif args[0] in aws_actions:
-                # ...and AWS
-                action = aws_actions[args[0]]
-                host_pattern = args[1]
-            else:
-                action = args[1]
-                host_pattern = args[0]
+            # check for reversed order with virsh/AWS/other action name
+            try:
+                action = lookup_action(args[0], virsh_actions, aws_actions, other_actions)
+                host_list = [args[1]]
+            except NotFoundException, e:
+                # check for reversed order with standard action name
+                if args[0] in allowed_actions:
+                    action = args[0]
+                    host_list = args[1:]
+                else:
+                    # otherwise it's service(8) order
+                    action = args[1]
+                    host_list = [args[0]]
+        elif len(args) > 2:
+            host_list = args[1:]
+            try:
+                action = lookup_action(args[0], virsh_actions, aws_actions, other_actions)
+            except NotFoundException, e:
+                action = args[0]
         else:
             raise errors.CommandlineError("Invalid command-line arguments.")
+
+        # Join all the remaining args together (maybe several hosts per arg), separated
+        # by spaces, then covert to a colon-separated string of hosts
+        s = " ".join(host_list)
+        host_pattern = re.sub(r"[\s:,]+", ":", s)
 
     return action, host_pattern

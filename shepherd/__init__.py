@@ -1,7 +1,7 @@
 #! /usr/bin/python
 # shepherd (Python script) -- Control cloud servers using the provider's API
 #
-# Version:   0.9
+# Version:   0.9.1
 # Copyright: (c)2015 Alastair Irvine <alastair@plug.org.au>
 # Keywords:  aws boto virsh
 # Licence:   This file is released under the GNU General Public License
@@ -15,7 +15,7 @@ Options:
   -i <inventory>, --inventory-file=<inventory>   Specify inventory host file
                                                  (default=/etc/ansible/hosts)
   -y, --confirm                                  Confirm termination of instances
-  -n, --dry_run                                  Tell boto to not perform the action
+  -n, --dry_run                                  Tell boto not to perform the action
   -w, --poll                                     Wait until operation is complete
   -s <seconds>, --interval=<seconds>             Activate -w and set the interval
   -R, --running                                  Only show running instances
