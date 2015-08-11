@@ -72,9 +72,14 @@ try:
             package_name, ext = splitext(basename(__file__))
             package = __import__(package_name) 
 except ImportError, e:
-    print >> sys.stderr, \
-      "%s: Error: Can't find package '%s'" % (__file__, package_name)
-    sys.exit(99)
+    # If the top-level import failed, be polite
+    if str(e) == "No module named " + package_name:
+        print >> sys.stderr, \
+          "%s: Error: Can't find package '%s'" % (__file__, package_name)
+        sys.exit(99)
+    else:
+        # Otherwise it's a coding error or dependency failure
+        raise
 
 if __name__ == '__main__':
     # Note difference from https://www.python.org/dev/peps/pep-0299/:
