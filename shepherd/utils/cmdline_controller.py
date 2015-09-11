@@ -42,9 +42,11 @@ class Controller(object):
         self.allowed_long_options += options
 
 
+    # Converts options into a collection of settings
+    # Returns (params, args)
     def process_options(self, all_args):
         try:
-            optlist, self.args = getopt.getopt(all_args, self.allowed_options, self.allowed_long_options)
+            optlist, args = getopt.getopt(all_args, self.allowed_options, self.allowed_long_options)
         except getopt.GetoptError, e:
             if self.throw:
                 raise CommandlineError(str(e))
@@ -64,7 +66,7 @@ class Controller(object):
         for handler in self.handlers:
             params.update(handler.prepare())
 
-        return params
+        return params, args
 
 
 

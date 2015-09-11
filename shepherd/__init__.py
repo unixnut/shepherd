@@ -67,6 +67,7 @@ logging.self='shepherd'
 
 
 # *** FUNCTIONS ***
+# Returns: action, host_pattern, params
 def process_cmdline(all_args):
     global params
 
@@ -77,10 +78,11 @@ def process_cmdline(all_args):
     # then run through all provider modules' cmdline sub-sub-modules
     aws_cmdline.init(controller)
 
-    params = controller.process_options(all_args)
+    # creation of params is only one of the things this does
+    params, args = controller.process_options(all_args)
 
     # handle the rest of the args present after the options
-    action, host_pattern = global_cmdline.process_args(controller.args)
+    action, host_pattern = global_cmdline.process_args(args)
 
     return action, host_pattern, params
 
