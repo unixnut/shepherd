@@ -12,9 +12,9 @@ class Credentials(object):
     Doesn't need to provide the ability to return credentials.
     
     Use default_region() to get the default region that was specified in .aws/config."""
-    def __init__(self):
+    def __init__(self, profile=None):
         # Just make a session 
-        boto_session = botocore.session.Session(awscli.EnvironmentVariables)
+        boto_session = botocore.session.Session(session_vars=awscli.EnvironmentVariables, profile=profile)
         creds = boto_session.get_credentials()
         self._default_region = boto_session.get_config_variable('region')
 
