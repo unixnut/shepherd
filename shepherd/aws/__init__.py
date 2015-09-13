@@ -45,7 +45,13 @@ class PerRegionCohort(provider.Cohort):
         super(PerRegionCohort,self).__init__(region, ids, host_map, params)
 
         try:
-            self.ec2 = boto.ec2.connect_to_region(region)
+            # When letting the boto library read the credentials, tell it which profile to use, if any.
+            # TO-DO: test with .aws/credentials and .boto
+            if params['use_boto']:
+                profile = params.get("profile")
+            else:
+                profile = None
+            self.ec2 = boto.ec2.connect_to_region(region, profile_name=profile)
         except boto.exception.NoAuthHandlerFound, e:
             raise errors.AuthError("No credentials")
 
