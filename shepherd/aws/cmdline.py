@@ -39,6 +39,9 @@ class MyHandler(Handler):
 
         # -- determine mode --
         # This is either boto or aws-cli, and is reflected in use_boto (as a flag)
+
+        # This var would be used by boto_helper.Credentials anyway, but this
+        # section of code is needed to determine the mode
         env_profile = os.getenv("AWS_DEFAULT_PROFILE")
         if env_profile:
             # treat this as a weak preference for aws-cli
@@ -52,7 +55,7 @@ class MyHandler(Handler):
         else:
             if env_profile and not self.use_boto:
                 profile = env_profile
-        
+
         data['use_boto'] = self.use_boto
         data['profile'] = profile
         return data

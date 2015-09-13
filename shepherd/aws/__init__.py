@@ -173,4 +173,4 @@ def init(params):
         ## print "params['use_boto'] is False!"
         # Use aws-cli config file for credentials
         import boto_helper
-        c = boto_helper.Credentials()
+        c = boto_helper.Credentials(params.get("profile"))
