@@ -1,7 +1,7 @@
 #! /usr/bin/python
 # shepherd (Python script) -- Control cloud servers using the provider's API
 #
-# Version:   0.9.1
+# Version:   1.0
 # Copyright: (c)2015 Alastair Irvine <alastair@plug.org.au>
 # Keywords:  aws boto virsh
 # Licence:   This file is released under the GNU General Public License
@@ -118,7 +118,7 @@ def go(action, host_maps, params):
 
                 # Show a summary for actions other than status
                 if action != "status" and params['verbose'] >= 1:
-                    print "Running %s on instances in region %s:\n  " % (action, region), ", ".join(ids)
+                    print "Running %s on instances in region %s (%s):\n  " % (action, region, provider), ", ".join(ids)
                 provider_info[provider][region].take_action(action)
             else:
                 # This shouldn't happen because the map for that provider
@@ -155,11 +155,14 @@ def poll(host_maps, provider_info, params):
         # TO-DO: optionally relist
 
     # newline for the dots that were printed
-    if params['verbose'] >= 2 and iterations > 0:
-        if undesired_count == 0:
-            print " Complete."
+    if params['verbose'] >= 2:
+        if iterations == 0:
+            print "No action required."
         else:
-            print " Giving up."
+            if undesired_count == 0:
+                print " Complete."
+            else:
+                print " Giving up."
 
 
 def main(argv):
