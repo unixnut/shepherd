@@ -13,8 +13,17 @@ class Credentials(object):
     
     Use default_region() to get the default region that was specified in .aws/config."""
     def __init__(self, profile=None):
-        # Just make a session 
-        boto_session = botocore.session.Session(session_vars=awscli.EnvironmentVariables, profile=profile)
+        # Make a session and try to set the profile
+        try:
+            boto_session = botocore.session.Session(session_vars=awscli.EnvironmentVariables, profile=profile)
+        except TypeError, e:
+            # "__init__() got an unexpected keyword argument 'profile'"
+            # This argument was unsupported prior to botocore v1.1, so use the old
+            # behaviour of munging the profile prior to loading the credentials
+            boto_session = botocore.session.Session(session_vars=awscli.EnvironmentVariables)
+            if profile:
+                boto_session.profile = profile
+
         creds = boto_session.get_credentials()
         self._default_region = boto_session.get_config_variable('region')
 
