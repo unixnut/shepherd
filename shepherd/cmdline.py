@@ -22,6 +22,7 @@ allowed_actions = ('status', 'fullstatus', 'start', 'restart', 'stop', 'kill')
 # translate other action sets into the above
 virsh_actions = {'list': 'status', 'dominfo': 'fullstatus', 'start': 'start', 'reboot': 'restart', 'shutdown': 'stop', 'destroy': 'kill'}
 aws_actions = {'start': 'start', 'reboot': 'restart', 'stop': 'stop', 'terminate': 'kill'}
+vagrant_actions = {'up': 'start', 'reload': 'restart', 'halt': 'stop', 'destroy': 'kill'}
 other_actions = {'delete': 'kill'}
 
 cmdline_handler = None
@@ -119,7 +120,7 @@ def process_args(args):
         if len(args) == 2:
             # check for reversed order with virsh/AWS/other action name
             try:
-                action = lookup_action(args[0], virsh_actions, aws_actions, other_actions)
+                action = lookup_action(args[0], virsh_actions, aws_actions, vagrant_actions, other_actions)
                 host_list = [args[1]]
             except NotFoundException, e:
                 # check for reversed order with standard action name

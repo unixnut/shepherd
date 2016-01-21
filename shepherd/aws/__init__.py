@@ -55,6 +55,9 @@ class PerRegionCohort(provider.Cohort):
         except boto.exception.NoAuthHandlerFound, e:
             raise errors.AuthError("No credentials")
 
+        if not self.ec2:
+            raise errors.ProviderError("Unknown cloud region " + region)
+
 
     def take_action(self, action):
         super(PerRegionCohort,self).take_action(action)
