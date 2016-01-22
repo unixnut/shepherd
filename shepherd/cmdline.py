@@ -134,7 +134,7 @@ def process_args(args):
         elif len(args) > 2:
             host_list = args[1:]
             try:
-                action = lookup_action(args[0], virsh_actions, aws_actions, other_actions)
+                action = lookup_action(args[0], virsh_actions, aws_actions, vagrant_actions, other_actions)
             except NotFoundException, e:
                 action = args[0]
         else:
