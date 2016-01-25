@@ -18,6 +18,12 @@ only [AWS][] is supported.
   [virsh]: http://libvirt.org/virshcmdref.html
   [AWS]:   http://aws.amazon.com
 
+Specifying the inventory file
+-----------------------------
+The filename can either be put into the `ANSIBLE_HOSTS` environment variable,
+or supplied on the command line with `--inventory-file=/x/y/z` (short option is
+`-i`).
+
 Why not use Ansible's Dynamic Inventory feature?
 ------------------------------------------------
 The [Dynamic Inventory][dyn] plugin allow Ansible to pull down
