@@ -23,7 +23,7 @@ allowed_actions = ('status', 'fullstatus', 'start', 'restart', 'stop', 'kill')
 virsh_actions = {'list': 'status', 'dominfo': 'fullstatus', 'start': 'start', 'reboot': 'restart', 'shutdown': 'stop', 'destroy': 'kill'}
 aws_actions = {'start': 'start', 'reboot': 'restart', 'stop': 'stop', 'terminate': 'kill'}
 vagrant_actions = {'up': 'start', 'reload': 'restart', 'halt': 'stop', 'destroy': 'kill'}
-other_actions = {'delete': 'kill'}
+other_actions = {'delete': 'kill', 'show': 'fullstatus'}
 
 cmdline_handler = None
 

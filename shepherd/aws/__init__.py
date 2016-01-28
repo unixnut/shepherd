@@ -1,9 +1,11 @@
+# vim: set fileencoding=utf-8 :
 from __future__ import absolute_import
 
 import sys
 import re
 import boto
 import boto.ec2
+import boto.vpc
 
 from .. import errors
 from .. import formatting
@@ -24,11 +26,12 @@ EC2_STATE_STOPPING      = 64
 EC2_STATE_STOPPED       = 80
 EC2_STATE_NONE          = -1
 
-action_state_map = {'status':  EC2_STATE_NONE,
-                    'start':   EC2_STATE_RUNNING,
-                    'restart': EC2_STATE_RUNNING,
-                    'stop':    EC2_STATE_STOPPED,
-                    'kill':    EC2_STATE_TERMINATED}
+action_state_map = {'status':      EC2_STATE_NONE,
+                    'fullstatus':  EC2_STATE_NONE,
+                    'start':       EC2_STATE_RUNNING,
+                    'restart':     EC2_STATE_RUNNING,
+                    'stop':        EC2_STATE_STOPPED,
+                    'kill':        EC2_STATE_TERMINATED}
 
 __all__ = []
 
@@ -51,7 +54,7 @@ class PerRegionCohort(provider.Cohort):
                 profile = params.get("profile")
             else:
                 profile = None
-            self.ec2 = boto.ec2.connect_to_region(region, profile_name=profile)
+            self.ec2 = boto.vpc.connect_to_region(region, profile_name=profile)
         except boto.exception.NoAuthHandlerFound, e:
             raise errors.AuthError("No credentials")
 
@@ -66,7 +69,7 @@ class PerRegionCohort(provider.Cohort):
         self.desired_state = action_state_map[action]
 
         try:
-            if action == "status":
+            if action == 'status' or action == 'fullstatus':
                 self.instances = self.ec2.get_only_instances(instance_ids=self.instance_ids)
                 for instance in self.instances:
                     # List the instance, unless its state doesn't match a
@@ -75,17 +78,66 @@ class PerRegionCohort(provider.Cohort):
                        (instance.state_code == EC2_STATE_STOPPED or not self.global_params['only_stopped']):
                         # Look up the inventory object from the EC2 object's ID
                         host = self.host_map[instance.id]
-                        # TO-DO: Ansible groups, EC2 tags
-                        # TO-DO: Return a tuple instead
-                        # Used to be "%s \t%s\t%s"
-                        formatting.print_host(host.name, instance.id, instance.state)
-            elif action == "start":
+
+                        if action == 'status':
+                            # TO-DO: Return a tuple instead
+                            # Used to be "%s \t%s\t%s"
+                            formatting.print_host(host.name, instance.id, instance.state)
+                        elif action == 'fullstatus':
+                            # à la knife node show
+                            # TO-DO: Ansible groups, EC2 tags
+                            info = { 'az': instance.placement,
+                                     'image_id': instance.image_id,
+                                     'instance_type': instance.instance_type,
+                                     'launch_time': instance.launch_time,
+                                     'private_ip': instance.private_ip_address,
+                                     'public_ip': instance.ip_address }
+                            if instance.public_dns_name:
+                                ## socket.gethostbyaddr(ip_address)
+                                info['fqdn'] = instance.public_dns_name
+
+                            if instance.vpc_id:
+                                ## template += """
+                                ##             VPC: {vpc_id} (<name>), {subnet_id} (<name>)""".format(subnet_id=instance.subnet_id,
+                                ##                                                                subnet_name="",
+                                ##                                                                vpc_id=instance.vpc_id,
+                                ##                                                                vpc_name="")
+                                info['vpc_info'] = instance.vpc_id
+                                vpcs = self.ec2.get_all_vpcs(vpc_ids=[instance.vpc_id])
+                                i_vpc = vpcs[0]
+                                if 'Name' in i_vpc.tags:
+                                    info['vpc_info'] += " (%s)" % i_vpc.tags['Name']
+                                info['vpc_info'] += ", " + instance.subnet_id
+                                subnets = self.ec2.get_all_subnets(subnet_ids=[instance.subnet_id])
+                                i_subnet = subnets[0]
+                                if 'Name' in i_subnet.tags:
+                                    info['vpc_info'] += " (%s)" % i_subnet.tags['Name']
+
+                            # TO-DO: use Jinja2 or something instead
+                            if 'fqdn' in info:
+                                template = "FQDN: {fqdn}\n"
+                            else:
+                                template = ""
+                            template += """\
+Instance type: {instance_type}
+Location:      {az} (availability zone)
+IP addrs:      {public_ip} {private_ip}"""
+                            if 'vpc_info' in info:
+                                template += """
+VPC: {vpc_info}"""
+                            template += """
+Launch time:   {launch_time} from AMI: {image_id}"""
+
+                            formatting.print_host(host.name, instance.id, instance.state,
+                                                  template.format(**info))
+
+            elif action == 'start':
                 self.ec2.start_instances(instance_ids=self.instance_ids, dry_run=self.global_params['dry_run'])
-            elif action == "stop":
+            elif action == 'stop':
                 self.ec2.stop_instances(instance_ids=self.instance_ids, dry_run=self.global_params['dry_run'])
-            elif action == "restart":
+            elif action == 'restart':
                 self.ec2.reboot_instances(instance_ids=self.instance_ids, dry_run=self.global_params['dry_run'])
-            elif action == "kill":
+            elif action == 'kill':
                 if self.global_params['confirm']:
                     self.ec2.terminate_instances(instance_ids=self.instance_ids, dry_run=self.global_params['dry_run'])
                 else:
