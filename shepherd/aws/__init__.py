@@ -93,8 +93,11 @@ class PerRegionCohort(provider.Cohort):
                                      'private_ip': instance.private_ip_address,
                                      'public_ip': instance.ip_address }
                             if instance.public_dns_name:
-                                ## socket.gethostbyaddr(ip_address)
                                 info['fqdn'] = instance.public_dns_name
+                            elif instance.ip_address:
+                                import socket
+                                addr_info = socket.gethostbyaddr(instance.ip_address)
+                                info['fqdn'] = addr_info[0]
 
                             if instance.vpc_id:
                                 ## template += """

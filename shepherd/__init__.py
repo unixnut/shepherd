@@ -1,7 +1,7 @@
 #! /usr/bin/python
 # shepherd (Python script) -- Control cloud servers using the provider's API
 #
-# Version:   1.2
+# Version:   1.2.1
 # Copyright: (c)2015 Alastair Irvine <alastair@plug.org.au>
 # Keywords:  aws boto virsh
 # Licence:   This file is released under the GNU General Public License
