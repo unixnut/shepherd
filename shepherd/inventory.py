@@ -3,7 +3,10 @@ from __future__ import absolute_import
 import exceptions
 import os.path
 
-import ansible.inventory
+from ansible.parsing.dataloader import DataLoader
+## from ansible.inventory.data import InventoryData
+from ansible.inventory.manager import InventoryManager
+import ansible.errors
 
 
 # *** CLASSES ***
@@ -26,7 +29,9 @@ def collate(host_pattern, inventory_filename, logger):
     if not os.path.exists(inventory_filename):
         raise InventoryFileMissing("Inventory file missing: " + inventory_filename)
     try:
-        i = ansible.inventory.Inventory(inventory_filename)
+        ## i = ansible.inventory.Inventory(inventory_filename)
+        loader = DataLoader()
+        i = InventoryManager(loader, inventory_filename)
     except ansible.errors.AnsibleError, e:
         raise InventoryError(str(e))
 
