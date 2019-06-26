@@ -1,11 +1,9 @@
 from __future__ import absolute_import
 
-import exceptions
-
 from .utils.cmdline_controller import CommandlineError
 
 
-class AuthError(exceptions.RuntimeError):
+class AuthError(RuntimeError):
     pass
 
 
@@ -13,7 +11,7 @@ class ActionError(CommandlineError):
     pass
 
 
-class InstanceError(exceptions.RuntimeError):
+class InstanceError(RuntimeError):
     pass
 
 
@@ -21,5 +19,5 @@ class MissingInstanceError(InstanceError):
     pass
 
 
-class ProviderError(exceptions.RuntimeError):
+class ProviderError(RuntimeError):
     pass

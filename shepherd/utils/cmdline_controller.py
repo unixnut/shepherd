@@ -2,13 +2,12 @@ from __future__ import absolute_import
 
 import getopt
 from collections import defaultdict
-import exceptions
 
 from .. import logging
 
 
 # *** CLASSES ***
-class CommandlineError(exceptions.RuntimeError):
+class CommandlineError(RuntimeError):
     pass
 
 
@@ -47,7 +46,7 @@ class Controller(object):
     def process_options(self, all_args):
         try:
             optlist, args = getopt.getopt(all_args, self.allowed_options, self.allowed_long_options)
-        except getopt.GetoptError, e:
+        except getopt.GetoptError as e:
             if self.throw:
                 raise CommandlineError(str(e))
             else:

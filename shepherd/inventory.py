@@ -1,16 +1,29 @@
 from __future__ import absolute_import
+from __future__ import print_function
 
-import exceptions
+
+import sys
 import os.path
 
-from ansible.parsing.dataloader import DataLoader
+from .utils import logging
+
+
+logging.self='shepherd'
+
+# If we can't seem to find the ansible package, fail with a specific exit code to
+# let bin/shepherd know
+try:
+    from ansible.parsing.dataloader import DataLoader
+except ImportError as e:
+    logging.report_error(str(e))
+    sys.exit(98)
 ## from ansible.inventory.data import InventoryData
 from ansible.inventory.manager import InventoryManager
 import ansible.errors
 
 
 # *** CLASSES ***
-class InventoryError(exceptions.RuntimeError):
+class InventoryError(RuntimeError):
     pass
 
 
@@ -18,7 +31,7 @@ class InventoryFileMissing(InventoryError):
     pass
 
 
-class NoHostsError(exceptions.RuntimeError):
+class NoHostsError(RuntimeError):
     pass
 
 
@@ -32,7 +45,7 @@ def collate(host_pattern, inventory_filename, logger):
         ## i = ansible.inventory.Inventory(inventory_filename)
         loader = DataLoader()
         i = InventoryManager(loader, inventory_filename)
-    except ansible.errors.AnsibleError, e:
+    except ansible.errors.AnsibleError as e:
         raise InventoryError(str(e))
 
     hosts = i.get_hosts(host_pattern)

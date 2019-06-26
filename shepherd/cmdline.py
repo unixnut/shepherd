@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from __future__ import print_function
 
 import sys
 import os
@@ -43,7 +44,9 @@ class MyHandler(Handler):
         self.params['verbose'] = 1
         self.params['poll_interval'] = 5
         self.params['max_poll'] = 20
-        self.params['inventory_filename'] = os.getenv('ANSIBLE_HOSTS', "/etc/ansible/hosts")
+        self.params['inventory_filename'] = os.getenv('ANSIBLE_INVENTORY',
+                                                      os.getenv('ANSIBLE_HOSTS',
+                                                                "/etc/ansible/hosts"))
 
 
     def handle(self, option, opt_arg): 
@@ -89,7 +92,7 @@ class MyHandler(Handler):
 
 # *** FUNCTIONS ***
 def show_help(dest=sys.stdout):
-    print >> dest, program_docstring,
+    print(program_docstring, end='', file=dest)
 
 
 
@@ -122,7 +125,7 @@ def process_args(args):
             try:
                 action = lookup_action(args[0], virsh_actions, aws_actions, vagrant_actions, other_actions)
                 host_list = [args[1]]
-            except NotFoundException, e:
+            except NotFoundException as e:
                 # check for reversed order with standard action name
                 if args[0] in allowed_actions:
                     action = args[0]
@@ -135,7 +138,7 @@ def process_args(args):
             host_list = args[1:]
             try:
                 action = lookup_action(args[0], virsh_actions, aws_actions, vagrant_actions, other_actions)
-            except NotFoundException, e:
+            except NotFoundException as e:
                 action = args[0]
         else:
             raise errors.CommandlineError("Invalid command-line arguments.")

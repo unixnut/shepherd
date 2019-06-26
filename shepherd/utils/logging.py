@@ -1,17 +1,19 @@
+from __future__ import print_function
+
 import sys
 
 
 def report_error(*msg):
-    print >> sys.stderr, self + ": Error:", " ".join(msg)
+    print(self + ": Error:", " ".join(msg), file=sys.stderr)
 
 
 def report_warning(*msg):
-    print >> sys.stderr, self + ": Warning:", " ".join(msg)
+    print(self + ": Warning:", " ".join(msg), file=sys.stderr)
 
 
 def report_notice(*msg):
-    print >> sys.stderr, self + ": Notice:", " ".join(msg)
+    print(self + ": Notice:", " ".join(msg), file=sys.stderr)
 
 
 def report_info(*msg):
-    print >> sys.stderr, self + ": Info:", " ".join(msg)
+    print(self + ": Info:", " ".join(msg), file=sys.stderr)

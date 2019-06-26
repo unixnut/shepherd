@@ -1,5 +1,7 @@
 #! /usr/bin/python
 
+from __future__ import print_function
+
 import botocore.session
 import boto
 # this is just used to get the environment variables that aws-cli uses
@@ -15,8 +17,9 @@ class Credentials(object):
     def __init__(self, profile=None):
         # Make a session and try to set the profile
         try:
-            boto_session = botocore.session.Session(session_vars=awscli.EnvironmentVariables, profile=profile)
-        except TypeError, e:
+            boto_session = botocore.session.Session(session_vars=awscli.EnvironmentVariables,
+                                                    profile=profile)
+        except TypeError as e:
             # "__init__() got an unexpected keyword argument 'profile'"
             # This argument was unsupported prior to botocore v1.1, so use the old
             # behaviour of munging the profile prior to loading the credentials
@@ -36,7 +39,7 @@ class Credentials(object):
             boto.config.set('Credentials', 'aws_secret_access_key', creds.secret_key)
             # TO-DO: 
             ## boto.config.set('Credentials', 'security_token', creds.token)
-        except AttributeError, e:
+        except AttributeError as e:
             p = boto_session.get_config_variable("profile")
             if p:
                 raise ProfileException("Missing/incomplete credentials in profile '%s'" % (p,))
@@ -58,7 +61,7 @@ class ProfileException(Exception):
 
 # *** MAINLINE ***
 if __name__ == "__main__":
-    print "hi from " + __file__
+    print("hi from " + __file__)
     c = Credentials()
-    print c.default_region()
+    print(c.default_region())
 

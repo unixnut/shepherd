@@ -13,6 +13,8 @@ The method used by this script is similar to the method suggested by
 https://www.python.org/dev/peps/pep-0299/ in that sys.argv is passed to main()
 and its return value is used as the program exit code."""
  
+from __future__ import print_function
+
 import sys
 from os.path import dirname, basename, splitext, realpath, exists, islink
 
@@ -28,7 +30,7 @@ def robust_import(package_name, filename):
         # assume this file's parent dir (and thereby that of the package)
         # is already present in sys.path
         return __import__(package_name) 
-    except ImportError, e:
+    except ImportError as e:
         # Scenario 1b: script is being run in-place manually
         #
         # We can add the package's parent dir to sys.path and retry the import
@@ -71,11 +73,11 @@ try:
             # there is no way to determine it programatically
             package_name, ext = splitext(basename(__file__))
             package = __import__(package_name) 
-except ImportError, e:
+except ImportError as e:
     # If the top-level import failed, be polite
     if str(e) == "No module named " + package_name:
-        print >> sys.stderr, \
-          "%s: Error: Can't find package '%s'" % (__file__, package_name)
+        print("%s: Error: Can't find package '%s'" % (__file__, package_name),
+              file=sys.stderr)
         sys.exit(99)
     else:
         # Otherwise it's a coding error or dependency failure

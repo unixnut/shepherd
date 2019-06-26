@@ -1,7 +1,7 @@
 #! /usr/bin/python
 # shepherd (Python script) -- Control cloud servers using the provider's API
 #
-# Version:   1.2.2
+# Version:   1.3.0
 # Copyright: (c)2015 Alastair Irvine <alastair@plug.org.au>
 # Keywords:  aws boto virsh
 # Licence:   This file is released under the GNU General Public License
@@ -43,6 +43,7 @@ Options:
 
 
 from __future__ import absolute_import
+from __future__ import print_function
 
 import sys
 import socket        # for gaierror
@@ -101,7 +102,7 @@ def go(action, host_maps, params):
             # (no need to use fromlist=[provider])
             provider_info[provider]['module'] = __import__(provider, globals=globals(), level=1)
             provider_info[provider]['module'].init(params)
-        except ImportError, e:
+        except ImportError as e:
             raise errors.ProviderError("Unknown provider " + provider)
 
         # take action
@@ -110,7 +111,7 @@ def go(action, host_maps, params):
 
             # Show a region & provider summary line between cohhorts
             if action == "status" and params['verbose'] >= 1:
-                print region, "(" + provider + ")"
+                print(region, "(" + provider + ")")
 
             ids = [id for id in host_maps[provider][region]]
             if ids:
@@ -120,7 +121,7 @@ def go(action, host_maps, params):
 
                 # Show a summary for actions other than status
                 if action != "status" and action != 'fullstatus' and params['verbose'] >= 1:
-                    print "Running %s on instances in region %s (%s):\n  " % (action, region, provider), ", ".join(ids)
+                    print("Running %s on instances in region %s (%s):\n  " % (action, region, provider), ", ".join(ids))
                 provider_info[provider][region].take_action(action)
             else:
                 # This shouldn't happen because the map for that provider
@@ -134,7 +135,7 @@ def poll(host_maps, provider_info, params):
     import time
 
     if params['debug']:
-        print "Polling every %d seconds, up to %d times" % (params['poll_interval'], params['max_poll'])
+        print("Polling every %d seconds, up to %d times" % (params['poll_interval'], params['max_poll']))
 
     iterations = 0
     while iterations < params['max_poll']:
@@ -159,12 +160,12 @@ def poll(host_maps, provider_info, params):
     # newline for the dots that were printed
     if params['verbose'] >= 2:
         if iterations == 0:
-            print "No action required."
+            print("No action required.")
         else:
             if undesired_count == 0:
-                print " Complete."
+                print(" Complete.")
             else:
-                print " Giving up."
+                print(" Giving up.")
 
 
 def main(argv):
@@ -172,7 +173,7 @@ def main(argv):
 
     try:
         action, host_pattern, params = process_cmdline(argv[1:])
-    except errors.CommandlineError, e:
+    except errors.CommandlineError as e:
         logging.report_error(str(e))
         global_cmdline.show_help(sys.stderr)
         return 1
@@ -181,13 +182,13 @@ def main(argv):
 
     try:
         host_maps = inventory.collate(host_pattern, params['inventory_filename'], logging)
-    except inventory.NoHostsError, e:
+    except inventory.NoHostsError as e:
         logging.report_notice("No instances matched");
         return
-    except inventory.InventoryFileMissing, e:
+    except inventory.InventoryFileMissing as e:
         logging.report_error(str(e))
         return 7
-    except inventory.InventoryError, e:
+    except inventory.InventoryError as e:
         logging.report_error(str(e))
         return 6
 
@@ -196,23 +197,23 @@ def main(argv):
 
         if params['poll'] and action != "status" and not params['dry_run']:
             poll(host_maps, provider_info, params)
-    except errors.ProviderError, e:
+    except errors.ProviderError as e:
         logging.report_error(str(e))
         return 5
-    except errors.AuthError, e:
+    except errors.AuthError as e:
         logging.report_error(str(e) + ": check .boto, or use appropriate credentials option")
         return 10
-    except errors.ActionError, e:
+    except errors.ActionError as e:
         logging.report_error(str(e))
         global_cmdline.show_help(sys.stderr)
         return 1
-    except errors.MissingInstanceError, e:
+    except errors.MissingInstanceError as e:
         # Error already reported
         return 3
-    except errors.InstanceError, e:
+    except errors.InstanceError as e:
         logging.report_error(str(e))
         return 4
-    except socket.gaierror, e:
+    except socket.gaierror as e:
         logging.report_error("Can't connect to endpoint: " + str(e))
         return 8
 
@@ -220,10 +221,10 @@ def main(argv):
 def action_debug(all_args):
     try:
         action, host_pattern, params = process_cmdline(all_args)
-        print "action:", action, "host_pattern:", host_pattern
-        print "profile:", params['profile']
-    except SystemExit, e:
-        print "(exiting with exit code %d)" % e.code
+        print("action:", action, "host_pattern:", host_pattern)
+        print("profile:", params['profile'])
+    except SystemExit as e:
+        print("(exiting with exit code %d)" % e.code)
     ## except RuntimeError, e:
 
 

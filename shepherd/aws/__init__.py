@@ -1,5 +1,6 @@
 # vim: set fileencoding=utf-8 :
 from __future__ import absolute_import
+from __future__ import print_function
 
 import sys
 import re
@@ -55,7 +56,7 @@ class PerRegionCohort(provider.Cohort):
             else:
                 profile = None
             self.ec2 = boto.vpc.connect_to_region(region, profile_name=profile)
-        except boto.exception.NoAuthHandlerFound, e:
+        except boto.exception.NoAuthHandlerFound as e:
             raise errors.AuthError("No credentials")
 
         if not self.ec2:
@@ -148,8 +149,9 @@ Launch time:   {launch_time} from AMI: {image_id}"""
                     sys.exit(0)
             else:
                 raise errors.ActionError("Unknown action '%s'" % (action,))
-        except boto.exception.EC2ResponseError, e:
+        except boto.exception.EC2ResponseError as e:
             # An error occurred when making the API request.
+            ## print(str(e.args[2]))
 
             # Unlike other exceptions, don't use str(e), because this
             # outputs everything including the response body
@@ -168,8 +170,8 @@ Launch time:   {launch_time} from AMI: {image_id}"""
                 #     The instance IDs 'i-1414202a, i-3d4e0607' do not exist
                 # or  The instance ID 'i-234aa3a9' does not exist
                 # (Do all matching first because otherwise stacked if-else doesn't work.)
-                match_single = re.search(r"instance ID '(i-[0-9a-f]*)'", e.args[2])
-                match_multiple = re.search(r"instance IDs '(i-[0-9a-f]*[^']*)'", e.args[2])
+                match_single = re.search(r"instance ID '(i-[0-9a-f]*)'", str(e.args[2]))
+                match_multiple = re.search(r"instance IDs '(i-[0-9a-f]*[^']*)'", str(e.args[2]))
                 if match_single:
                     host = self.host_map[match_single.group(1)]
                     logger.report_error(category_str,
@@ -185,7 +187,7 @@ Launch time:   {launch_time} from AMI: {image_id}"""
                                  "for hosts; instance IDs do not exist:")
                     for id in id_list:
                         host = self.host_map[id]
-                        print >> sys.stderr, "\t%s (%s)" % (host.name, id)
+                        print("\t%s (%s)" % (host.name, id), file=sys.stderr)
                 else:
                     # Something went wrong when trying to see which instance ID was bad
                     logger.report_error(category_str,
@@ -208,7 +210,7 @@ Launch time:   {launch_time} from AMI: {image_id}"""
 
         undesired_count = 0
         if self.global_params['debug']:
-            print '[%d:]' % self.desired_state,
+            print('[%d:]' % self.desired_state, end=' ')
         for instance in self.instances:
             if not first_run:
                 try:
@@ -218,14 +220,14 @@ Launch time:   {launch_time} from AMI: {image_id}"""
             if instance.state_code != self.desired_state:
                 undesired_count += 1
                 if self.global_params['debug']:
-                    print '[%d != %d]' % (instance.state_code, self.desired_state),
+                    print('[%d != %d]' % (instance.state_code, self.desired_state), end=' ')
             else:
                 if self.global_params['debug']:
-                    print '[%d]' % instance.state_code,
+                    print('[%d]' % instance.state_code, end=' ')
             # previous_state_code
 
         if self.global_params['debug']:
-            print "%d deviants in AWS region %s" % (undesired_count, self.region)
+            print("%d deviants in AWS region %s" % (undesired_count, self.region))
 
         return undesired_count
 
