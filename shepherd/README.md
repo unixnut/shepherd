@@ -64,8 +64,8 @@ YMMV.
 Usage
 -----
 Shepherd takes an action argument on the command line, plus a host
-pattern that will match one or more hosts in the  can be used in one of
-two ways.
+pattern that will match one or more hosts in the inventory file.  The
+program can be invoked in one of two ways.
 
 [virsh][] mode:
 
