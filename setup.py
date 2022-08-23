@@ -22,18 +22,17 @@ setup(
     description="Control cloud servers using the provider's API",
     long_description=readme,
     long_description_content_type='text/markdown',
-##     entry_points={
-##         'console_scripts': [
-##             'hashpw=shepherd:main',
-##         ],
-##     },
-    scripts=['bin/shepherd'],
+    entry_points={
+        'console_scripts': [
+            'shepherd=shepherd:main',
+        ],
+    },
     url='https://github.com/unixnut/shepherd',
     install_requires=requirements,
     setup_requires=setup_requirements,
     keywords="aws ec2 cli",
     packages=find_packages(".", exclude=['tests']),
-    version="2.0.1",   # TO-DO: use 'bumpversion'
+    version="2.0.2",
     zip_safe=False,
     license="GNU General Public License v3",
     python_requires='>=3.5',

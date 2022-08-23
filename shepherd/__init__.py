@@ -1,7 +1,7 @@
 #! /usr/bin/python
 # shepherd (Python script) -- Control cloud servers using the provider's API
 #
-# Version:   2.0.1
+# Version:   2.0.2
 # Copyright: (c)2015 Alastair Irvine <alastair@plug.org.au>
 # Keywords:  aws boto virsh
 # Licence:   This file is released under the GNU General Public License
@@ -166,11 +166,11 @@ def poll(host_maps, provider_info, params):
                 print(" Giving up.")
 
 
-def main(argv):
+def main():
     """Acts like main() in a C program.  Return value is used as program exit code."""
 
     try:
-        action, host_pattern, params = process_cmdline(argv[1:])
+        action, host_pattern, params = process_cmdline(sys.argv[1:])
     except errors.CommandlineError as e:
         messages.report_error(str(e))
         global_cmdline.show_help(sys.stderr)
