@@ -81,7 +81,7 @@ docs: ## generate Sphinx HTML documentation, including API docs
 servedocs: docs ## compile the docs watching for changes
 	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
 
-sign: dist/colorls-$(VERSION)-py3-none-any.whl.asc dist/colorls-$(VERSION).tar.gz.asc
+sign: dist/cloud_shepherd-$(VERSION)-py3-none-any.whl.asc dist/cloud-shepherd-$(VERSION).tar.gz.asc
 
 %.asc: %
 	gpg --detach-sign -a $<
