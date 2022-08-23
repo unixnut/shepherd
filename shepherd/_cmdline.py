@@ -1,3 +1,6 @@
+"""Template: NOT USED."""
+
+
 from ... import cmdline_controller.Handler
 
 extra_options = 'abp:'

@@ -1,7 +1,7 @@
 #! /usr/bin/python
 # tests/list-instances.py (Python script) -- tests boto_helper.Credentials using EC2
 
-from __future__ import print_function
+
 
 import boto.ec2
 

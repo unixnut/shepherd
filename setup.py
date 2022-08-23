@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 
 
 requirements = [## 'ansible>=2.7.5',
-                'botocore', 'boto',
+                'boto3',
                 'awscli' # this is just used to get the environment variables that aws-cli uses
                ] ## ['Click>=6.0', ]
 
@@ -15,7 +15,7 @@ setup_requirements = ['pytest-runner', 'bumpversion', 'setuptools~=40.4.3', 'whe
 
 
 setup(
-    name="shepherd",
+    name="cloud-shepherd",
     author="Alastair Irvine",
     description="Control cloud servers using the provider's API",
 ##     entry_points={
@@ -29,6 +29,6 @@ setup(
     setup_requires=setup_requirements,
     keywords="aws ec2 cli",
     packages=find_packages(".", exclude=['tests']),
-    version="1.3.0",
+    version="2.0.0",   # TO-DO: use 'bumpversion'
     zip_safe=False,
 )

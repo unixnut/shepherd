@@ -1,7 +1,7 @@
 #! /usr/bin/python
 # shepherd (Python script) -- Control cloud servers using the provider's API
 #
-# Version:   1.3.0
+# Version:   2.0.0
 # Copyright: (c)2015 Alastair Irvine <alastair@plug.org.au>
 # Keywords:  aws boto virsh
 # Licence:   This file is released under the GNU General Public License
@@ -42,14 +42,12 @@ Options:
 #   + detect invalid action names
 
 
-from __future__ import absolute_import
-from __future__ import print_function
-
 import sys
 import socket        # for gaierror
+import logging
 
 ## from . import ...
-from .utils import logging
+from .utils import messages
 from .utils.cmdline_controller import Controller
 
 from . import cmdline as global_cmdline
@@ -58,7 +56,7 @@ from . import inventory
 from . import errors
 
 
-logging.self='shepherd'
+messages.self = 'shepherd'
 
 ## __all__ = ...
 
@@ -126,7 +124,7 @@ def go(action, host_maps, params):
             else:
                 # This shouldn't happen because the map for that provider
                 # or region won't have been created by inventory.collate()
-                logging.report_notice("No hosts had correct cloud info");
+                messages.report_notice("No hosts had correct cloud info");
 
     return provider_info
 
@@ -174,22 +172,46 @@ def main(argv):
     try:
         action, host_pattern, params = process_cmdline(argv[1:])
     except errors.CommandlineError as e:
-        logging.report_error(str(e))
+        messages.report_error(str(e))
         global_cmdline.show_help(sys.stderr)
         return 1
 
-    params['logger'] = logging
+    # self.params['verbose'] governs logging within the program, but
+    # self.params['debug'] governs the root logger
+    if params['debug'] >= 2:
+        global_loglevel = logging.DEBUG
+    elif params['debug'] >= 1:
+        global_loglevel = logging.INFO
+    else:
+        global_loglevel = logging.WARNING
+    if params['logfile']:
+        logging.basicConfig(level=global_loglevel, filename=self.params['logfile'])
+    else:
+        logging.basicConfig(level=global_loglevel)
+
+    if params['verbose'] >= 3:
+        loglevel = logging.DEBUG
+    elif params['verbose'] >= 2:
+        loglevel = logging.INFO
+    elif params['verbose'] >= 1:
+        loglevel = logging.WARNING
+    else:
+        loglevel = logging.ERROR
+    params['logger'] = logging.getLogger("shepherd")
+    params['logger'].setLevel(loglevel)
 
     try:
-        host_maps = inventory.collate(host_pattern, params['inventory_filename'], logging)
+        host_maps = inventory.collate(host_pattern, 
+                                      params['inventory_filename'],
+                                      params['logger'])
     except inventory.NoHostsError as e:
-        logging.report_notice("No instances matched");
-        return
+        messages.report_notice("No instances matched");
+        return 0
     except inventory.InventoryFileMissing as e:
-        logging.report_error(str(e))
+        messages.report_error(str(e))
         return 7
     except inventory.InventoryError as e:
-        logging.report_error(str(e))
+        messages.report_error(str(e))
         return 6
 
     try:
@@ -198,23 +220,23 @@ def main(argv):
         if params['poll'] and action != "status" and not params['dry_run']:
             poll(host_maps, provider_info, params)
     except errors.ProviderError as e:
-        logging.report_error(str(e))
+        messages.report_error(str(e))
         return 5
     except errors.AuthError as e:
-        logging.report_error(str(e) + ": check .boto, or use appropriate credentials option")
+        messages.report_error(str(e) + ": check ~/.aws/credentials, or use appropriate option")
         return 10
     except errors.ActionError as e:
-        logging.report_error(str(e))
+        messages.report_error(str(e))
         global_cmdline.show_help(sys.stderr)
         return 1
     except errors.MissingInstanceError as e:
         # Error already reported
         return 3
     except errors.InstanceError as e:
-        logging.report_error(str(e))
+        messages.report_error(str(e))
         return 4
     except socket.gaierror as e:
-        logging.report_error("Can't connect to endpoint: " + str(e))
+        messages.report_error("Can't connect to endpoint: " + str(e))
         return 8
 
 

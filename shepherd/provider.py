@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 
 
 # *** CLASSES ***
@@ -13,6 +13,7 @@ class Cohort(object):
         self.host_map = host_map
         self.global_params = params
         self.region = region
+        self.logger = params['logger']
 
 
     def take_action(self, action):

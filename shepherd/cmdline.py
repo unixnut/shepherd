@@ -1,12 +1,11 @@
-from __future__ import absolute_import
-from __future__ import print_function
+"""Global command-line parsing module."""
+
 
 import sys
 import os
 import re
 
 from .utils.cmdline_controller import Handler as Handler
-from .utils import logging
 from . import __doc__ as program_docstring
 from . import errors
 
@@ -37,7 +36,7 @@ class NotFoundException(Exception):
 
 class MyHandler(Handler):
     def __init__(self):
-        super(MyHandler,self).__init__()
+        super(MyHandler, self).__init__()
 
         # -- defaults --
         self.params['debug'] = 0
@@ -47,6 +46,7 @@ class MyHandler(Handler):
         self.params['inventory_filename'] = os.getenv('ANSIBLE_INVENTORY',
                                                       os.getenv('ANSIBLE_HOSTS',
                                                                 "/etc/ansible/hosts"))
+        self.params['logfile'] = None
 
 
     def handle(self, option, opt_arg): 
@@ -78,7 +78,7 @@ class MyHandler(Handler):
             self.params['debug'] += 1
         elif option == "-h" or option == "--help":
             show_help()
-            sys.exit(0)
+            raise SystemExit(0)
         else:
             return False
 

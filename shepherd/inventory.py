@@ -1,22 +1,19 @@
-from __future__ import absolute_import
-from __future__ import print_function
 
 
-import sys
+
+
 import os.path
 
-from .utils import logging
+import logging
 
-
-logging.self='shepherd'
 
 # If we can't seem to find the ansible package, fail with a specific exit code to
 # let bin/shepherd know
 try:
     from ansible.parsing.dataloader import DataLoader
 except ImportError as e:
-    logging.report_error(str(e))
-    sys.exit(98)
+    logging.warning(str(e))
+    raise SystemExit(98)
 ## from ansible.inventory.data import InventoryData
 from ansible.inventory.manager import InventoryManager
 import ansible.errors
@@ -70,6 +67,6 @@ def collate(host_pattern, inventory_filename, logger):
 
             host_maps[provider][region][instance_id] = host
         except KeyError:
-            logger.report_warning("host '%s' doesn't have necessary cloud info" % (host.name,))
+            logger.warning("host '%s' doesn't have necessary cloud info", host.name)
 
     return host_maps

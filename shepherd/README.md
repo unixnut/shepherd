@@ -40,12 +40,7 @@ of host management.  It is deliberately not dynamic.
 Installation
 ------------
 
-Shepherd is a Python package, and it is currently installed manually,
-i.e.:
 
-1. Clone https://github.com/unixnut/cloud-support.git
-1. Create a symbolic link to `cloud-support/shepherd/__main__.py`
-     - e.g.: **`sudo ln -s ~/src/cloud-support/shepherd/__main__.py /usr/local/bin/shepherd`**
 
 Setup
 -----

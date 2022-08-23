@@ -1,6 +1,7 @@
-from __future__ import absolute_import
+
 
 from .utils.cmdline_controller import CommandlineError
+from .inventory import InventoryError, InventoryFileMissing, NoHostsError
 
 
 class AuthError(RuntimeError):
@@ -20,4 +21,8 @@ class MissingInstanceError(InstanceError):
 
 
 class ProviderError(RuntimeError):
+    pass
+
+
+class NetworkError(RuntimeError):
     pass

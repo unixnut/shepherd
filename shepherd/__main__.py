@@ -13,7 +13,7 @@ The method used by this script is similar to the method suggested by
 https://www.python.org/dev/peps/pep-0299/ in that sys.argv is passed to main()
 and its return value is used as the program exit code."""
  
-from __future__ import print_function
+
 
 import sys
 from os.path import dirname, basename, splitext, realpath, exists, islink

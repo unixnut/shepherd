@@ -119,3 +119,4 @@ weights.tar.bz2
 *.bak
 .~lock.*#
 *~
+.virtualenv.ansible/

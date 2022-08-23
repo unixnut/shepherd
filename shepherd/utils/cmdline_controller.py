@@ -1,9 +1,9 @@
-from __future__ import absolute_import
+
 
 import getopt
 from collections import defaultdict
 
-from .. import logging
+from .. import messages
 
 
 # *** CLASSES ***
@@ -50,8 +50,8 @@ class Controller(object):
             if self.throw:
                 raise CommandlineError(str(e))
             else:
-                logging.report_error(e)
-                sys.exit(1)
+                messages.report_error(e)
+                raise SystemExit(1)
 
         for option, opt_arg in optlist:
             self.process_option(option, opt_arg)
