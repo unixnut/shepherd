@@ -1,45 +1,111 @@
-Cloud-support
-=============
+Shepherd
+========
 
-Various command line tools and libraries to make using AWS and other providers
-more convenient.
+A.k.a. *cloud-shepherd*.
 
-[Shepherd](shepherd)
-----------
 This is a tool for controlling a stable of hosts listed in an
 [Ansible][] [inventory file][Ansible_inventory].  (By the use of
 non-standard Ansible variables that identify the cloud provider, region
 and ID of the host.)  It can also show their status.
 
-  [Ansible]: http://www.ansible.com/
+Unlike Ansible, the purpose of Shepherd is to manage hosts without
+having to log into them.  Actions are perfomed by contacting the API of
+one or more cloud providers.
+
+Shepherd is intended to be used like [virsh][] or service(1).  Currently,
+only [AWS][] is supported.  For certain tasks, it is friendlier than
+vendor-provided tools like [aws-cli] (`ec2` subcommand).
+
+  [Ansible]: https://www.ansible.com/
   [Ansible_inventory]: http://docs.ansible.com/intro_inventory.html
+  [virsh]: https://libvirt.org/virshcmdref.html
+  [AWS]:   https://aws.amazon.com "Amazon Web Services"
+  [aws-cli]: https://aws.amazon.com/cli/ "AWS Command Line Interface"
 
-boto_helper
------------
-Allows your programs that use [boto] to enjoy the magic and flexibility
-of the `.aws/config` file used by [aws-cli] instead of the putrid mess
-that is the `.boto` file used by the boto library by default.
+Specifying the inventory file
+-----------------------------
+The filename can either be put into the `ANSIBLE_INVENTORY` environment variable,
+or supplied on the command line with `--inventory-file=/x/y/z` (short option is
+`-i`).
 
-The documentation can be described as a code snippet.  Just do this:
+Why not use Ansible's Dynamic Inventory feature?
+------------------------------------------------
+The [Dynamic Inventory][dyn] plugin allow Ansible to pull down
+a list of hosts from a cloud provider and then manage them.
 
-```python
-import boto.ec2
-import boto_helper
+However, it can be handy to keep track hosts with names that are
+different from those in the AWS EC2 instance name tag, for example.
+Therefore the intent of Shepherd is to make the inventory file the locus
+of host management.  It is deliberately not dynamic.
 
-c = boto_helper.Credentials()
+  [dyn]: http://docs.ansible.com/intro_dynamic_inventory.html
 
-ec2 = boto.ec2.connect_to_region(c.default_region())
-```
-    
-There is no need for `boto_helper.Credentials` to return credentials,
-because the constructor feeds them to the `boto` library's config
-submodule where they are available to all API calls.
+Installation
+------------
 
-Note that this module is mainly used during testing, because in production
-you'll either use `AssumeRole` and get the credentials from the AWS EC2
-metadata server, or you'll use a .boto file with just the credentials
-you need.
+Run **`pip3 install cloud-shepherd`**
 
-  [aws-cli]: http://aws.amazon.com/cli/ "AWS Command Line Interface"
-  [boto]: https://github.com/boto/boto "Python interface to Amazon Web Services"
+Setup
+-----
 
+A [Makefile](Makefile) is provided (see `shepherd/Makefile`) that uses an
+internal AWK script to generate an Ansible inventory file from your `.ssh/config`
+file.  This brings all the regular Ansible variables across from corresponding
+SSH settings in the file.
+
+Note that the Makefile currently ignores all hosts in `.ssh/config` that
+aren't preceeded by a comment line that starts with an AWS EC2 instance ID.
+
+YMMV.
+
+Usage
+-----
+Shepherd takes an action argument on the command line, plus a host
+pattern that will match one or more hosts in the inventory file.  The
+program can be invoked in one of two ways.
+
+[virsh][] mode:
+
+    shepherd <action> <host-pattern>
+    shepherd list
+
+...where `<action>` is one of:-
+
+  - dominfo
+  - start
+  - reboot
+  - shutdown
+  - destroy
+
+Or service(1) mode:
+
+    shepherd <host-pattern> <action>
+
+...where `<action>` is one of:-
+
+  - status
+  - fullstatus
+  - start
+  - restart
+  - stop
+  - kill
+
+Also, the following AWS action names can be used instead:
+
+  - start
+  - reboot
+  - stop
+  - terminate
+
+Options
+-------
+
+Examples
+--------
+
+Licence
+-------
+
+GNU General Public License v3.0 or later
+
+See [COPYING](COPYING) to see the full text.

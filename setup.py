@@ -35,4 +35,23 @@ setup(
     packages=find_packages(".", exclude=['tests']),
     version="2.0.0",   # TO-DO: use 'bumpversion'
     zip_safe=False,
+    license="GNU General Public License v3",
+    python_requires='>=3.5',
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: End Users/Desktop',
+        'Intended Audience :: System Administrators',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'Environment :: Console',
+        'Topic :: Utilities',
+        'Operating System :: POSIX :: Linux',
+        'Natural Language :: English',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Unix Shell',
+    ],
 )
