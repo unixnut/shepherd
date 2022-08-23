@@ -85,18 +85,22 @@ class PerRegionCohort(provider.Cohort):
         elif action == 'fullstatus':
             # à la knife node show
             # TO-DO: Ansible groups, EC2 tags
-            info = { 'az': instance.placement,
+            info = { 'az': instance.placement['AvailabilityZone'],
                      'image_id': instance.image_id,
                      'instance_type': instance.instance_type,
                      'launch_time': instance.launch_time,
-                     'private_ip': instance.private_ip_address,
-                     'public_ip': instance.ip_address }
-            if instance.public_dns_name:
-                info['fqdn'] = instance.public_dns_name
-            elif instance.ip_address:
-                import socket
-                addr_info = socket.gethostbyaddr(instance.ip_address)
-                info['fqdn'] = addr_info[0]
+                     'private_ip': instance.private_ip_address }
+            if instance.ipv6_address:
+                info['ipv6'] = instance.ipv6_address
+            if instance.public_ip_address:
+                info['public_ip'] = instance.public_ip_address
+                if instance.public_dns_name:
+                    info['fqdn'] = instance.public_dns_name
+                else:
+                    # Reverse-resolve the public IP and use that for the FQDN
+                    import socket
+                    addr_info = socket.gethostbyaddr(instance.ip_address)
+                    info['fqdn'] = addr_info[0]
 
             if instance.vpc_id:
                 ## template += """
@@ -126,7 +130,14 @@ FQDN: {fqdn}
             template += """\
 Instance type: {instance_type}
 Location:      {az} (availability zone)
-IP addrs:      {public_ip} {private_ip}"""
+IP addrs:      """
+
+            # Addresses
+            if 'public_ip' in info:
+                template += "{public_ip} "
+            template += "{private_ip}"
+            if 'ipv6' in info:
+                template += " {ipv6}"
 
             if 'vpc_info' in info:
                 template += """
