@@ -1,0 +1,25 @@
+# Makefile for virtualenv pinning
+# Thanks to http://docs.python-guide.org/en/latest/dev/virtualenvs/
+
+# For use with a "bootstrap" VirtualEnv that has virtualenv installed within it
+# E.g. /tmp/foo/bin/virtualenv
+# See http://unixnut-tech.blogspot.com.au/2016/10/how-to-bootstrap-python-virtualenvs.html
+BOOTSTRAP_VIRTUALENV=virtualenv
+
+# E.g. -p /usr/bin/python3
+VIRTUALENV_OPTS=
+
+.PHONY: install init setup pip info list update upgrade
+
+setup: | .venv
+.venv: 
+	grep -q '^\.venv' .gitignore 2> /dev/null || echo .venv >> .gitignore
+
+init: Pipfile.lock
+Pipfile.lock: Pipfile
+	pipenv lock
+
+install: | .venv
+	pipenv install ##  --dev
+
+# N/A: upgrade

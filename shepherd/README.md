@@ -1,6 +1,8 @@
 Shepherd
 ========
 
+A.k.a. *cloud-shepherd*.
+
 This is a tool for controlling a stable of hosts listed in an
 [Ansible][] [inventory file][Ansible_inventory].  (By the use of
 non-standard Ansible variables that identify the cloud provider, region
@@ -10,7 +12,7 @@ Unlike Ansible, the purpose of Shepherd is to manage hosts without
 having to log into them.  Actions are perfomed by contacting the API of
 one or more cloud providers.
 
-Shepherd is intended to be used like [virsh][] or service(1).  Currently (v0.8),
+Shepherd is intended to be used like [virsh][] or service(1).  Currently,
 only [AWS][] is supported.
 
   [Ansible]: http://www.ansible.com/
@@ -20,7 +22,7 @@ only [AWS][] is supported.
 
 Specifying the inventory file
 -----------------------------
-The filename can either be put into the `ANSIBLE_HOSTS` environment variable,
+The filename can either be put into the `ANSIBLE_INVENTORY` environment variable,
 or supplied on the command line with `--inventory-file=/x/y/z` (short option is
 `-i`).
 
@@ -36,25 +38,23 @@ of host management.  It is deliberately not dynamic.
 
   [dyn]: http://docs.ansible.com/intro_dynamic_inventory.html
 
-
 Installation
 ------------
 
-
+Run **`pip3 install cloud-shepherd`**
 
 Setup
 -----
 
-A [Makefile](Makefile) is provided that uses an internal AWK script to
-generate an Ansible inventory file from your .ssh/config file.  This
-brings all the regular Ansible variables across from corresponding
+A [Makefile](Makefile) is provided (see `shepherd/Makefile`) that uses an
+internal AWK script to generate an Ansible inventory file from your `.ssh/config`
+file.  This brings all the regular Ansible variables across from corresponding
 SSH settings in the file.
 
-Note that the Makefile currently ignores all hosts in .ssh/config that
+Note that the Makefile currently ignores all hosts in `.ssh/config` that
 aren't preceeded by a comment line that starts with an AWS EC2 instance ID.
 
 YMMV.
-
 
 Usage
 -----

@@ -13,11 +13,15 @@ requirements = [## 'ansible>=2.7.5',
 
 setup_requirements = ['pytest-runner', 'bumpversion', 'setuptools~=40.4.3', 'wheel']
 
+with open('README.md') as readme_file:
+    readme = readme_file.read()
 
 setup(
     name="cloud-shepherd",
     author="Alastair Irvine",
     description="Control cloud servers using the provider's API",
+    long_description=readme,
+    long_description_content_type='text/markdown',
 ##     entry_points={
 ##         'console_scripts': [
 ##             'hashpw=shepherd:main',
