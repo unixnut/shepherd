@@ -190,6 +190,8 @@ Launch time:   {launch_time} from AMI: {image_id}"""
             elif e.response['Error']['Code'] == "UnauthorizedOperation":
                 print(dir(e))
                 raise errors.AuthError("Permission denied")
+            elif e.response['Error']['Code'] == "InvalidInstanceID.NotFound":
+                raise errors.InstanceError(str(e.response['Error']['Message'])) from e
             else:
                 # InvalidParameterValue, MissingParameter, etc.
                 # etc.

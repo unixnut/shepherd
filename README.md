@@ -48,6 +48,15 @@ Run **`pip3 install cloud-shepherd`**
 Setup
 -----
 
+The following extra host variables must (unless specified) be present in
+the inventory file otherwise the host will not be operated on and a
+warning will be shown:
+
+  - `cloud_provider` -- choices: `aws`
+  - `cloud_account` -- *optional* (account ID for AWS)
+  - `cloud_region`
+  - `cloud_instance_id`
+
 A [Makefile](Makefile) is provided (see `shepherd/Makefile`) that uses an
 internal AWK script to generate an Ansible inventory file from your `.ssh/config`
 file.  This brings all the regular Ansible variables across from corresponding
