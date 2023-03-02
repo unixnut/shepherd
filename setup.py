@@ -8,7 +8,6 @@ from setuptools import setup, find_packages
 
 requirements = [## 'ansible>=2.7.5',
                 'boto3',
-                'awscli' # this is just used to get the environment variables that aws-cli uses
                ] ## ['Click>=6.0', ]
 
 setup_requirements = ['pytest-runner', 'bumpversion', 'setuptools~=40.4.3', 'wheel']
@@ -32,7 +31,7 @@ setup(
     setup_requires=setup_requirements,
     keywords="aws ec2 cli",
     packages=find_packages(".", exclude=['tests']),
-    version="2.0.4",
+    version="2.0.5",
     zip_safe=False,
     license="GNU General Public License v3",
     python_requires='>=3.5',
