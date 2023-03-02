@@ -32,7 +32,7 @@ setup(
     setup_requires=setup_requirements,
     keywords="aws ec2 cli",
     packages=find_packages(".", exclude=['tests']),
-    version="2.0.3",
+    version="2.0.4",
     zip_safe=False,
     license="GNU General Public License v3",
     python_requires='>=3.5',

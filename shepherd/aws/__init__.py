@@ -99,7 +99,7 @@ class PerRegionCohort(provider.Cohort):
                 else:
                     # Reverse-resolve the public IP and use that for the FQDN
                     import socket
-                    addr_info = socket.gethostbyaddr(instance.ip_address)
+                    addr_info = socket.gethostbyaddr(instance.public_ip_address)
                     info['fqdn'] = addr_info[0]
 
             if instance.vpc_id:
@@ -211,7 +211,7 @@ Launch time:   {launch_time} from AMI: {image_id}"""
         for instance in self.instances:
             if not first_run:
                 try:
-                    instance.update(validate=True)
+                    instance.load()
                 except ValueError:
                     raise errors.InstanceError("instance no longer exists; instance ID = ",
                                                instance.id)
