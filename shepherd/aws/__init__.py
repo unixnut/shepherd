@@ -111,11 +111,11 @@ class PerRegionCohort(provider.Cohort):
                 info['vpc_info'] = instance.vpc_id
                 vpcs = self.ec2.vpcs.filter(VpcIds=[instance.vpc_id])
                 i_vpc = next(iter(vpcs))
-                if 'Name' in i_vpc.tags:
+                if i_vpc.tags and 'Name' in i_vpc.tags:
                     info['vpc_info'] += " (%s)" % i_vpc.tags['Name']
                 info['vpc_info'] += ", " + instance.subnet_id
-                if 'Name' in instance.subnet.tags:
-                    info['vpc_info'] += " (%s)" % i_subnet.tags['Name']
+                if instance.subnet.tags and 'Name' in instance.subnet.tags:
+                    info['vpc_info'] += " (%s)" % instance.subnet.tags['Name']
 
             # Templates have everything starting on column 0, like for the output
             # (Backslashes avoid leading newline.)
